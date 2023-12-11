@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Spam Detection</title>
+    <style>
+        input[type="text"] {
+      height: 30px; 
+    }
+    .App {
+  text-align: center;
+}
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+.container{
+    display: flex;
+    width: 420px;
+    padding: 50px 0;
+    border-radius: 8px;
+    background: #fff;
+    row-gap: 30px;
+    flex-direction: column;
+    align-items: center;
+}
+.circular-progress{
+    position: relative;
+    height: 250px;
+    width: 250px;
+    border-radius: 50%;
+    background: conic-gradient(#7d2ae8 3.6deg, #ededed 0deg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.circular-progress::before{
+    content: "";
+    position: absolute;
+    height: 210px;
+    width: 210px;
+    border-radius: 50%;
+    background-color: #fff;
+}
+.progress-value{
+    position: relative;
+    font-size: 40px;
+    font-weight: 600;
+    color: #7d2ae8;
+}
+.text{
+    font-size: 30px;
+    font-weight: 500;
+    color: #606060;
+}
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+.textarea {
+  background-color: #dddddd;
+  color: #666666;
+  padding: 1em;
+  border-radius: 10px;
+  border: 2px solid transparent;
+  outline: none;
+  font-family: "Heebo", sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 1.4;
+  width: 500px;
+  height: 300px;
+  transition: all 0.2s;
+}
+
+.textarea:hover {
+  cursor: pointer;
+  background-color: #eeeeee;
+}
+
+.textarea:focus {
+  cursor: text;
+  color: #333333;
+  background-color: white;
+  border-color: #333333;
+}
+.btn{
+
+  font-family: "Roboto", sans-serif;
+  font-size: 18px;
+  font-weight: bold;
+  background: #1E90FF;
+  width: 160px;
+  padding: 20px;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+  color: #fff;
+  border-radius: 5px;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  -webkit-transition-duration: 0.3s;
+  transition-duration: 0.3s;
+ -webkit-transition-property: box-shadow, transform;
+ 
+ }
+ 
+ .btn:hover, .btn:focus, .btn:active{
+ 
+ box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+ 
+ -webkit-transform: scale(1.1);
+ 
+ transform: scale(1.1);
+ 
+ }
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+.sub{
+  visibility: hidden;
+}
+body{
+    background-color: #bcd8e0;
+}
+
+.App-link {
+  color: #61dafb;
+}
+.containers {
+    display: flex;
+    justify-content: space-between;
+}
+
+
+
+
+    </style>
+</head>
+<body onload="master()">
+    <center>
+        <h1>Malicious Spam Predicion </h1>
+        <div class="containers">
+            <div class="left"> <form method="POST" action="/predict">
+                <input type="submit" id="sub" style="display: none;"> 
+                <!-- Form for Predict button -->
+                <textarea rows="5" cols="20" class="textarea" placeholder="Enter Text Here To Check For Spam" id="message" name="message"></textarea><br><br>
+                <button class="btn" onclick="spamcheck()">Predict</button>
+                <div class="container">
+                    <div class="circular-progress" id="first">
+                        <span class="progress-value" id="firstValue">0%</span>
+                    </div>
+                    <span class="text" id="spamLevel">Spam Level</span>
+                    <p id="spamResult"></p>
+                </div>
+            </form>
+        </div>
+        <div class="center">
+            <form method="POST" action="/link" >
+                <input type="submit" id="sub1" style="display: none;"> 
+                <textarea rows="5" cols="20" class="textarea" placeholder="Enter Link Here To Check For Safety" name="url"></textarea><br><br>
+               <center>
+                   <button class="btn" onclick="link()">Link</button>
+               </center>
+                <div class="container">
+                    <div class="circular-progress" id="second">
+                        <span class="progress-value" id="secondvalue">0%</span>
+                    </div>
+                    <span class="text" id="linkLevel">Link Level</span>
+                    <p id="linkResult"></p>
+                </div>
+            </form>
+        </div>
+        <div class="right">
+            <form method="POST" action="/threats">
+                <input type="submit" id="sub2" style="display: none;">
+                <textarea rows="5" cols="20" class="textarea" placeholder="Enter Content Here To Check Threat Level" name="content"></textarea><br><br>
+                <button class="btn" onclick="threat()">Threats</button>
+                <div class="container">
+                    <div class="circular-progress" id="third">
+                        <span class="progress-value" id="thirdvalue">0%</span>
+                    </div>
+                    <span class="text">Threat Level</span>
+                </div>
+            </form>
+        </div>
+        </div>
+        <!-- <table>
+            <tr>
+                <td>
+                    <center> -->
+                    
+       
+    <!-- </center>
+    </td>
+    <td> -->
+        <!-- Form for Link button -->
+        
+    <!-- </td>
+    <td> -->
+        
+        <!-- Form for Threats button -->
+        <!-- <center> -->
+        
+    <!-- </center> -->
+    <!-- </td> -->
+<!-- </tr> -->
+<!-- <tr> -->
+
+    <!-- <td style="display: none;"> -->
+        <!-- <td> -->
+ 
+ {% if prediction_text %}
+ <p id="reply" onload="master()" >{{prediction_text}}</p>
+ 
+        <!-- </td>
+        <td> -->
+
+{% endif %}
+    <!-- </td>
+</tr>
+        -->
+        
+    
+
+<!-- </table> -->
+    </center>
+    <!-- Hidden submit button to trigger form submission -->
+    
+</body>
+<script>
+    function master()
+    {
+        var message=document.getElementById("reply").innerHTML;
+        var type=message.slice(0,1);
+        var value=message.slice(1);
+        if(type=="H")
+        {
+            spam("Ham",value);
+        }
+        if(type=="S")
+        {
+            spam("Spam",value);
+        }
+        if(type=="G")
+        {
+            link("cert",value);
+        }
+        if(type=="B")
+        {
+            link("benign",value);
+        }
+        if(type=="D")
+        {
+            link("defacement",value);
+        }
+        if(type=="M")
+        {
+            link("malware",value);
+        }
+        if(type=="P")
+        {
+            link("phishing",value);
+        }
+    }
+    function spam(spamornot,log){
+        var result="";
+        color="";
+        if(spamornot=="Spam")
+        {
+            // result="Not a Spam Message";
+            // color="#8af542"
+            result="Spam Message" +   "<br>Probability = "+ log;
+            color="#f54242";
+            
+        }
+        else
+        {
+            result="Not a Spam Message"+ "<br>Probability = "+ (1-log);
+            color="#8af542"
+            
+            // result="It is a Spam Messaage";
+            // color="#f54242";
+        }
+        document.getElementById("spamResult").innerHTML=result;
+        document.getElementById("spamResult").style.color=color;
+        score=log*100;
+        let circularProgress=document.getElementById("first"),
+    progressValue = document.querySelector(".progress-value");
+    let progressStartValue = 0    
+    if(score<50)
+    {
+        score=100-score;
+    }
+    progressEndValue = Math.floor(score),    
+    speed = 25;
+    if(progressEndValue==0)
+    {
+        progressEndValue=10;
+    }
+    let progress = setInterval(() => {
+    progressStartValue++;
+    document.getElementById("firstValue").style.color=color;
+    if(color=="#f54242")
+    {
+        progressValue.textContent = `${progressStartValue}%`
+    circularProgress.style.background = `conic-gradient(#f54242 ${progressStartValue * 3.6}deg, #ededed 0deg)`
+    }
+    else
+    {
+        progressValue.textContent = `${progressStartValue}%`
+    circularProgress.style.background = `conic-gradient(#8af542 ${progressStartValue * 3.6}deg, #ededed 0deg)`
+    }
+
+
+    if(progressStartValue == progressEndValue){
+        clearInterval(progress);
+    }    
+}, speed);
+    }
+  function link(linkmsg,linkprob){
+        linkprob=linkprob*100;
+        linkprob=Math.floor(linkprob);
+
+    let circularProgress=document.getElementById("second"),
+    progressValue=document.getElementById("secondvalue");
+
+    var result="";
+        color="";
+        if(linkmsg == "defacement")
+        {
+            result="Defacement"+ "<br>Probability = "+ linkprob;
+            color="#8af542"
+        }
+        if(linkmsg == "malware")
+        {
+            // result="Not a Spam Message";
+            // color="#8af542"
+            result="Malware" +   "<br>Probability = "+ linkprob;
+            color="#f54242";
+            
+        }
+        else if(linkmsg == "phishing"){
+            result="Phishing Suspicion" +   "<br>Probability = "+ linkprob;
+            color="#f54242";   
+        }
+        else if(linkmsg == "benign"){
+            result="Benign"+ "<br>Probability = "+ linkprob;
+            color="#8af542"
+        }
+        else if(linkmsg == "cert")
+        {
+            
+            result="Certified Website with Valid SSL Certificate"+"<br>Probability= "+linkprob;
+            color="#8af542";
+            // result="It is a Spam Messaage";
+            // color="#f54242";
+        }
+        document.getElementById("linkResult").innerHTML=result;
+        document.getElementById("linkResult").style.color=color;
+        // linkprob=linkprob;
+
+    let progressStartValue = 0,    
+    progressEndValue = linkprob,    
+    speed = 25;
+    
+    let progress = setInterval(() => {
+    progressStartValue++;
+    if(color=="#f54242")
+    {
+        progressValue.textContent = `${linkprob}%`
+    circularProgress.style.background = `conic-gradient(#f54242 ${progressStartValue * 3.6}deg, #ededed 0deg)`
+
+    }
+    else
+    {
+        progressValue.textContent = `${linkprob}%`
+    circularProgress.style.background = `conic-gradient(#8af542 ${progressStartValue * 3.6}deg, #ededed 0deg)`
+
+    }
+    if(progressStartValue == progressEndValue){
+        clearInterval(progress);
+    }    
+}, speed);
+  }
+  function threat(){
+    let circularProgress=document.getElementById("third"),
+    progressValue=document.getElementById("thirdvalue");
+
+    let progressStartValue = 0,    
+    progressEndValue = 99,    
+    speed = 100;
+    
+    let progress = setInterval(() => {
+    progressStartValue++;
+
+    progressValue.textContent = `${progressStartValue}%`
+    circularProgress.style.background = `conic-gradient(#7d2ae8 ${progressStartValue * 3.6}deg, #ededed 0deg)`
+
+    if(progressStartValue == progressEndValue){
+        clearInterval(progress);
+    }    
+}, speed);
+  }
+
+</script>
+</html>
