@@ -1,0 +1,10 @@
+sklearn
+flask
+urllib
+googlesearch
+pandas
+collections
+numpy
+tld
+re
+requests
